@@ -5,31 +5,28 @@ import {
   Binoculars,
   MagnifyingGlass,
   MagicWand,
-} from "@phosphor-icons/react";
+} from '@phosphor-icons/react';
 
-const CHAT_ICONS = {
-  plus: Plus,
-  chatBubble: ChatCircleDots,
-  support: Headset,
-  search2: Binoculars,
-  search: MagnifyingGlass,
-  magic: MagicWand,
-};
+// const CHAT_ICONS = {
+//   plus: Plus,
+//   chatBubble: ChatCircleDots,
+//   support: Headset,
+//   search2: Binoculars,
+//   search: MagnifyingGlass,
+//   magic: MagicWand,
+// };
 
 export default function OpenButton({ settings, isOpen, toggleOpen }) {
   if (isOpen) return null;
-  const ChatIcon = CHAT_ICONS.hasOwnProperty(settings?.chatIcon)
-    ? CHAT_ICONS[settings.chatIcon]
-    : CHAT_ICONS.plus;
   return (
     <button
       style={{ backgroundColor: settings.buttonColor }}
-      id="anything-llm-embed-chat-button"
+      id='anything-llm-embed-chat-button'
       onClick={toggleOpen}
-      className={`hover:allm-cursor-pointer allm-border-none allm-flex allm-items-center allm-justify-center allm-p-4 allm-rounded-full allm-text-white allm-text-2xl hover:allm-opacity-95`}
-      aria-label="Toggle Menu"
+      className={`hover:allm-cursor-pointer allm-flex allm-items-center allm-justify-center allm-p-4 allm-rounded-full allm-text-white allm-text-2xl hover:allm-opacity-95 allm-border-1 allm-border-[#00ffc3]`}
+      aria-label='Toggle Menu'
     >
-      <ChatIcon className="text-white" />
+      <ChatCircleDots color='#00ffc3' />
     </button>
   );
 }
