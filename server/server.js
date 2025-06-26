@@ -49,7 +49,7 @@ function initSSE(res) {
 }
 
 app.post('/api/gpt-response', async (req, res) => {
-  const { prompt } = req.body;
+  const { prompt, previous_response_id } = req.body;
 
   if (!prompt) {
     return res
@@ -68,6 +68,7 @@ app.post('/api/gpt-response', async (req, res) => {
     const response = await openai.responses.create({
       model: 'gpt-4o',
       stream: false,
+      previous_response_id,
       instructions: assistantInstruction,
       input: configurePrompt(prompt),
       tools: [
@@ -103,7 +104,7 @@ app.post('/api/gpt-response', async (req, res) => {
 });
 
 app.post('/api/gpt-response/sse', async (req, res) => {
-  const { prompt } = req.body;
+  const { prompt, previous_response_id } = req.body;
 
   if (!prompt) {
     return res
@@ -125,6 +126,7 @@ app.post('/api/gpt-response/sse', async (req, res) => {
     const stream = await openai.responses.create({
       model: 'gpt-4o',
       stream: true,
+      previous_response_id,
       instructions: assistantInstruction,
       input: configurePrompt(prompt),
       tools: [
