@@ -137,7 +137,7 @@ const PromptReply = forwardRef(
       );
     }
 
-    console.log({ reply });
+    // console.log({ reply });
 
     return (
       <div className='allm-py-[5px]'>

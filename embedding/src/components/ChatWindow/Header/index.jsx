@@ -21,11 +21,11 @@ export default function ChatWindowHeader({
   const menuRef = useRef();
   const buttonRef = useRef();
 
-  const handleChatReset = async () => {
-    await ChatService.resetEmbedChatSession(settings, sessionId);
-    setChatHistory([]);
-    setShowOptions(false);
-  };
+  // const handleChatReset = async () => {
+  //   await ChatService.resetEmbedChatSession(settings, sessionId);
+  //   setChatHistory([]);
+  //   setShowOptions(false);
+  // };
   useEffect(() => {
     function handleClickOutside(event) {
       if (
@@ -57,7 +57,7 @@ export default function ChatWindowHeader({
         />
       </div>
       <div className='allm-absolute allm-right-0 allm-flex allm-gap-x-1 allm-items-center allm-px-[22px]'>
-        {settings.loaded && (
+        {/* {settings.loaded && (
           <button
             ref={buttonRef}
             type='button'
@@ -67,7 +67,7 @@ export default function ChatWindowHeader({
           >
             <DotsThreeOutlineVertical size={20} weight='fill' />
           </button>
-        )}
+        )} */}
         <button
           type='button'
           onClick={closeChat}
@@ -77,13 +77,13 @@ export default function ChatWindowHeader({
           <X size={20} weight='bold' />
         </button>
       </div>
-      <OptionsMenu
+      {/* <OptionsMenu
         settings={settings}
         showing={showingOptions}
         resetChat={handleChatReset}
         sessionId={sessionId}
         menuRef={menuRef}
-      />
+      /> */}
     </div>
   );
 }
