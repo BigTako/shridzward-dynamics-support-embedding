@@ -4,7 +4,7 @@ import renderMarkdown from '@/utils/chat/markdown';
 import DOMPurify from '@/utils/chat/purify';
 import { embedderSettings } from '@/main';
 import { v4 } from 'uuid';
-import BotIcon from '@/assets/bot-avatar.svg';
+import HumanAgentIcon from '@/assets/human-agent-avatar.svg';
 import { formatDate } from '@/utils/date';
 
 const ThoughtBubble = ({ thought }) => {
@@ -64,6 +64,8 @@ const HistoricalMessage = forwardRef(
       ?.replace(/<think>[\s\S]*?<\/think>/g, '')
       .trim();
 
+    const AgentAvatar = HumanAgentIcon;
+
     return (
       <div className='allm-py-[5px]'>
         {role === 'assistant' && (
@@ -80,7 +82,7 @@ const HistoricalMessage = forwardRef(
         >
           {role === 'assistant' && (
             <img
-              src={embedderSettings.settings.assistantIcon || BotIcon}
+              src={embedderSettings.settings.assistantIcon || AgentAvatar}
               alt='Shridzward Dynamics Bot Icon'
               className='allm-w-9 allm-h-9 allm-flex-shrink-0 allm-ml-2'
               id='anything-llm-icon'

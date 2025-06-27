@@ -1,10 +1,9 @@
 import BotIcon from '@/assets/bot-avatar.svg';
-import ChatService from '@/models/chatService';
+import HumanAgentIcon from '@/assets/human-agent-avatar.svg';
 import {
   ArrowCounterClockwise,
   Check,
   Copy,
-  DotsThreeOutlineVertical,
   Envelope,
   X,
 } from '@phosphor-icons/react';
@@ -43,6 +42,8 @@ export default function ChatWindowHeader({
     };
   }, [menuRef]);
 
+  const AgentAvatar = HumanAgentIcon;
+
   return (
     <div
       style={{ borderBottom: '1px solid #E9E9E9' }}
@@ -52,7 +53,7 @@ export default function ChatWindowHeader({
       <div className='allm-flex allm-justify-center allm-items-center allm-w-full allm-h-[76px]'>
         <img
           style={{ maxWidth: 48, maxHeight: 48 }}
-          src={iconUrl ?? BotIcon}
+          src={iconUrl ?? AgentAvatar}
           alt={iconUrl ? 'Brand' : 'Bot avatar'}
         />
       </div>

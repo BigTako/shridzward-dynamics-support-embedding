@@ -2,7 +2,7 @@ import { forwardRef, memo, useState } from 'react';
 import { Warning, CircleNotch, CaretDown } from '@phosphor-icons/react';
 import renderMarkdown from '@/utils/chat/markdown';
 import { embedderSettings } from '@/main';
-import BotIcon from '@/assets/bot-avatar.svg';
+import HumanAgentIcon from '@/assets/human-agent-avatar.svg';
 import { formatDate } from '@/utils/date';
 
 const ThinkingIndicator = ({ hasThought }) => {
@@ -80,6 +80,8 @@ const PromptReply = forwardRef(
       .replace(/<\/?think>/g, '') // Remove any stray think tags
       .trim();
 
+    const AgentAvatar = HumanAgentIcon;
+
     if (isThinking) {
       return (
         <div className='allm-py-[5px]'>
@@ -89,7 +91,7 @@ const PromptReply = forwardRef(
           </div>
           <div className='allm-flex allm-items-start allm-w-full allm-h-fit allm-justify-start'>
             <img
-              src={embedderSettings.settings.assistantIcon || BotIcon}
+              src={embedderSettings.settings.assistantIcon || AgentAvatar}
               alt='Shridzward Dynamics Bot Icon'
               className='allm-w-9 allm-h-9 allm-flex-shrink-0 allm-ml-2'
             />
@@ -119,7 +121,7 @@ const PromptReply = forwardRef(
           </div>
           <div className='allm-flex allm-items-start allm-w-full allm-h-fit allm-justify-start'>
             <img
-              src={embedderSettings.settings.assistantIcon || BotIcon}
+              src={embedderSettings.settings.assistantIcon || AgentAvatar}
               alt='Shridzward Dynamics Bot Icon'
               className='allm-w-9 allm-h-9 allm-flex-shrink-0 allm-ml-2'
             />
@@ -150,7 +152,7 @@ const PromptReply = forwardRef(
           className='allm-flex allm-items-start allm-w-full allm-h-fit allm-justify-start'
         >
           <img
-            src={embedderSettings.settings.assistantIcon || BotIcon}
+            src={embedderSettings.settings.assistantIcon || AgentAvatar}
             alt='Shridzward Dynamics Bot Icon'
             className='allm-w-9 allm-h-9 allm-flex-shrink-0 allm-ml-2'
           />

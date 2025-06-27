@@ -11,7 +11,7 @@ document.body.appendChild(appElement);
 
 const scriptSettings = Object.assign(
   {
-    assistantName: 'Bottie',
+    assistantName: 'Support Agent',
   },
   document?.currentScript?.dataset || {}
 );
