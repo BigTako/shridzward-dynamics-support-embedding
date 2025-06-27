@@ -4,6 +4,7 @@ import App from './App.jsx';
 import './index.css';
 import { parseStylesSrc } from './utils/constants.js';
 import { initI18n } from './i18n.js';
+import { ChatProvider } from '@/context/ChatContext.jsx';
 
 const appElement = document.createElement('div');
 document.body.appendChild(appElement);
@@ -34,6 +35,8 @@ initI18n(scriptSettings);
 const root = ReactDOM.createRoot(appElement);
 root.render(
   <React.StrictMode>
-    <App />
+    <ChatProvider>
+      <App />
+    </ChatProvider>
   </React.StrictMode>
 );

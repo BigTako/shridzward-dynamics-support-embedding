@@ -5,31 +5,34 @@ import ChatContainer from './ChatContainer';
 import Sponsor from '../Sponsor';
 import { ChatHistoryLoading } from './ChatContainer/ChatHistory';
 import ResetChat from '../ResetChat';
+import { useChatContext } from '@/context/ChatContext';
 
 export default function ChatWindow({ closeChat, settings, sessionId }) {
-  const { chatHistory, setChatHistory, loading } = useChatHistory(
-    settings,
-    sessionId
-  );
+  const { supportAgent, setSupportAgent, isChangingAgent } = useChatContext();
 
-  if (loading) {
-    return (
-      <div className='allm-flex allm-flex-col allm-h-full'>
-        <ChatWindowHeader
-          sessionId={sessionId}
-          settings={settings}
-          iconUrl={settings.brandImageUrl}
-          closeChat={closeChat}
-          setChatHistory={setChatHistory}
-        />
-        <ChatHistoryLoading />
-        <div className='allm-pt-4 allm-pb-2 allm-h-fit allm-gap-y-1'>
-          <SessionId />
-          <Sponsor settings={settings} />
-        </div>
-      </div>
-    );
-  }
+  // const { chatHistory, setChatHistory, loading } = useChatHistory(
+  //   settings,
+  //   sessionId
+  // );
+
+  // if (loading) {
+  //   return (
+  //     <div className='allm-flex allm-flex-col allm-h-full'>
+  //       <ChatWindowHeader
+  //         sessionId={sessionId}
+  //         settings={settings}
+  //         iconUrl={settings.brandImageUrl}
+  //         closeChat={closeChat}
+  //         setChatHistory={setChatHistory}
+  //       />
+  //       <ChatHistoryLoading />
+  //       <div className='allm-pt-4 allm-pb-2 allm-h-fit allm-gap-y-1'>
+  //         <SessionId />
+  //         <Sponsor settings={settings} />
+  //       </div>
+  //     </div>
+  //   );
+  // }
 
   setEventDelegatorForCodeSnippets();
 
@@ -41,24 +44,40 @@ export default function ChatWindow({ closeChat, settings, sessionId }) {
           settings={settings}
           iconUrl={settings.brandImageUrl}
           closeChat={closeChat}
-          setChatHistory={setChatHistory}
+          setChatHistory={() => {}}
         />
       )}
       <div className='allm-flex-grow allm-overflow-y-auto'>
         <ChatContainer
           sessionId={sessionId}
           settings={settings}
-          knownHistory={chatHistory}
+          knownHistory={[]}
         />
       </div>
       <div className='allm-mt-4 allm-pb-4 allm-h-fit allm-gap-y-2 allm-z-10'>
-        <span
-          className='allm-h-fit allm-px-0 allm-border-none allm-text-sm allm-bg-transparent hover:allm-opacity-80 hover:allm-underline'
-          style={{ color: '#7A7D7E' }}
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '10px',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
         >
-          Welcome to
-        </span>
-        <Sponsor settings={settings} />
+          <button
+            className='allm-h-fit allm-px-0 allm-border-none allm-cursor-pointer allm-text-sm allm-bg-transparent hover:allm-opacity-80 hover:allm-underline'
+            style={{ color: '#7A7D7E' }}
+            disabled={isChangingAgent}
+            onClick={() =>
+              setSupportAgent((agent) => (agent === 'bot' ? 'human' : 'bot'))
+            }
+          >
+            {isChangingAgent
+              ? 'Changing agent.Please wait...'
+              : `Switch to ${supportAgent === 'bot' ? 'human agent' : 'bot'}`}
+          </button>
+          <Sponsor settings={settings} />
+        </div>
         {/* <ResetChat
           setChatHistory={setChatHistory}
           settings={settings}
