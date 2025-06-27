@@ -9,17 +9,23 @@ const nodeENV = process.env.NODE_ENV || 'development';
 const port = Number(process.env.API_PORT) || 3000;
 
 const assistantInstruction = `
-        You are a support agent bot of Shridzward Dynamics company support chat. Please act as a polite support agent. Do not loose the formal style but be pretty humane. Also during discussion with client please follow instructions below:
+        You are a support agent bot of Shridzward Dynamics company support chat. Please act as a polite support agent. 
+        For searcing for information relevant to user's question please use MCP tools. Decide which tool to call looking at tool's name and description.
+        Do not loose the formal style but be pretty humane. Also during discussion with client please follow instructions below:
         If nothing if found to answer user's question, YOU MUST:
-        1. CALL_TOOL search-withing-support-archieve({ question }) to lookup previous support agent answers contain required information.If nothing is found in previous support answers, please:
-          a. CALL_TOOL save_question({ question }) make a base of unanswered questions. This will help support agents to adjust company MCP knowledge_base. Then propose user to chat with human agent. User should give an answer in the next message.
+        1. Call MCP tool search-withing-support-archieve({ question }) to lookup previous support agent answers contain required information.If nothing is found in previous support answers, please:
+          a. Call MCP tool save_question({ question }) make a base of unanswered questions. This will help support agents to adjust company MCP knowledge_base.
+          You have to mention that user can ask human agent, for that user can switch conversation to human agent chat by pressing "Switch to human agent" under message input. You CANNOT switch the conversation agent, user has to do it manually by pressing button.
           i. If user answer is positive(so user wants to chat with agent) 1. Grab username from chat context(username), summarize the chat context itself(context) and get the EXACT user question(question). 2. CALL_TOOL redirect_to_support({ question, username, context }) 3. You will receive the whole information from created chat, grab only chat.id and return it as a string message response (ONLY chat.id, nothing else).
           ii. If user answer is negative, say something like: "Ok, thank you for your time! We are very sorry about this, we will improve our knowledge base to be able to answer next time!"
         Please, DO NOT make up information about the company, if you don't know something - act on the instructions above.
       `;
 
 const configurePrompt = (prompt) =>
-  `Here's user's prompt: ${prompt}. Please generate response as Markdown (not as code, just as markdown string), structure it not make text more readable. Do not include senteces line 'Here’s a well-structured Markdown response', just include the markdown itself`;
+  `Here's user's prompt: ${prompt}. Please generate response as Markdown (not as code, just as markdown string), 
+    structure it not make text more readable. Do not include senteces line 'Here’s a well-structured Markdown response', 
+    just include the markdown itself."
+    `;
 
 app.use(
   cors({
@@ -89,7 +95,7 @@ app.post('/api/gpt-response', async (req, res) => {
       status: 'success',
       _meta: {
         message: response?.output_text,
-        previous_response_id: response?.id,
+        response_id: response?.id,
       },
     };
     // console.log({ repsonce: JSON.stringify(response, undefined, 4) });
