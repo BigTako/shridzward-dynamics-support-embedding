@@ -96,7 +96,7 @@ export default function ChatContainer({ settings }) {
         sentAt: Math.floor(Date.now() / 1000),
       },
     ];
-    setChatHistory(() => prevChatHistory);
+    setChatHistory(prevChatHistory);
     setLoadingResponse(true);
     setMessage('');
     // call /api/gpt_responce/sse with message
@@ -112,13 +112,7 @@ export default function ChatContainer({ settings }) {
 
   useEffect(() => {
     try {
-      const currentChatHistory = JSON.parse(
-        localStorage.getItem('chatHistory') || '[]'
-      );
-
-      setChatHistory(() => currentChatHistory);
-
-      if (!currentChatHistory.length) {
+      if (!chatHistory.length) {
         launchChatBot();
       }
     } catch (error) {

@@ -1,18 +1,36 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useEffect, useState } from 'react';
 
 // Create the ChatContext
 const ChatContext = createContext();
 
 // Provider component
 export function ChatProvider({ children }) {
-  const [supportAgent, setSupportAgent] = useState('bot'); // 'bot' or 'human'
+  const [supportAgent, setSupportAgent] = useState(null); // 'bot' or 'human'
   const [isChangingAgent, setIsChangingAgent] = useState(false); // 'bot' or 'human'
-  const [chatHistory, setChatHistory] = useState([]);
+  const [chatHistory, setChatHistory] = useState(null);
+
+  useEffect(() => {
+    const currentSupportAgent = localStorage.getItem('supportAgent') || 'bot';
+    setSupportAgent(currentSupportAgent);
+  }, []);
+
+  useEffect(() => {
+    const currentChatHistory = JSON.parse(
+      localStorage.getItem('chatHistory') || '[]'
+    );
+
+    setChatHistory(() => currentChatHistory);
+  }, []);
 
   const saveChatHistory = (newHistory) => {
     const stringifiedHistory = JSON.stringify(newHistory);
     localStorage.setItem('chatHistory', stringifiedHistory);
   };
+
+  const saveSupportAgent = (agent) => {
+    localStorage.setItem('supportAgent', agent);
+  };
+
   return (
     <ChatContext.Provider
       value={{
@@ -23,6 +41,7 @@ export function ChatProvider({ children }) {
         chatHistory,
         setChatHistory,
         saveChatHistory,
+        saveSupportAgent,
       }}
     >
       {children}

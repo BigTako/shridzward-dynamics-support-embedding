@@ -5,7 +5,8 @@ import ResetChat from '../ResetChat';
 import { useChatContext } from '@/context/ChatContext';
 
 export default function ChatWindow({ closeChat, settings, sessionId }) {
-  const { supportAgent, setSupportAgent, isChangingAgent } = useChatContext();
+  const { supportAgent, setSupportAgent, isChangingAgent, saveSupportAgent } =
+    useChatContext();
 
   // const { chatHistory, setChatHistory, loading } = useChatHistory(
   //   settings,
@@ -30,6 +31,14 @@ export default function ChatWindow({ closeChat, settings, sessionId }) {
   //     </div>
   //   );
   // }
+
+  const handleToggleSupportAgent = () => {
+    setSupportAgent((agent) => {
+      const newAgentType = agent === 'bot' ? 'human' : 'bot';
+      saveSupportAgent(newAgentType);
+      return newAgentType;
+    });
+  };
 
   setEventDelegatorForCodeSnippets();
 
@@ -65,9 +74,7 @@ export default function ChatWindow({ closeChat, settings, sessionId }) {
             className='allm-h-fit allm-px-0 allm-border-none allm-cursor-pointer allm-text-sm allm-bg-transparent hover:allm-opacity-80 hover:allm-underline'
             style={{ color: '#7A7D7E' }}
             disabled={isChangingAgent}
-            onClick={() =>
-              setSupportAgent((agent) => (agent === 'bot' ? 'human' : 'bot'))
-            }
+            onClick={handleToggleSupportAgent}
           >
             {isChangingAgent
               ? 'Changing agent.Please wait...'
