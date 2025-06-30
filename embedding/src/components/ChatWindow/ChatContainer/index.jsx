@@ -6,25 +6,26 @@ import { useChatContext } from '@/context/ChatContext';
 import { socket } from '@/socketClient';
 export const SEND_TEXT_EVENT = 'anythingllm-embed-send-prompt';
 
-export default function ChatContainer({
-  sessionId,
-  settings,
-  knownHistory = [],
-}) {
+export default function ChatContainer({ settings }) {
   const [message, setMessage] = useState('');
   const [loadingResponse, setLoadingResponse] = useState(false);
   const [prevResponseId, setPrevResponseId] = useState(null);
-  const [chatHistory, setChatHistory] = useState([]);
-  const { supportAgent, isChangingAgent, setIsChangingAgent } =
-    useChatContext();
+  const {
+    supportAgent,
+    isChangingAgent,
+    setIsChangingAgent,
+    chatHistory,
+    setChatHistory,
+    saveChatHistory,
+  } = useChatContext();
   const [humanAgentChatId, setHumanAgentChatId] = useState(null);
   const [isJoiningChat, setIsJoiningChat] = useState(false);
   const [isGettingClientData, setIsGettingClientData] = useState(false);
   const [isSendingMessage, setIsSendingMessage] = useState(false);
   const [user, setUser] = useState(null);
-
   const streamBotAsnwer = (message, prevResponseId, saveMessage = true) => {
     const prevChatHistory = [...chatHistory];
+
     saveMessage &&
       prevChatHistory.push({
         content: message,
@@ -39,7 +40,7 @@ export default function ChatContainer({
       animate: true,
       sentAt: Math.floor(Date.now() / 1000),
     });
-    setChatHistory(prevChatHistory);
+    setChatHistory(() => prevChatHistory);
 
     const evtSource = new SSE(
       `${import.meta.env.VITE_API_URL}/gpt-response/sse`,
@@ -60,8 +61,11 @@ export default function ChatContainer({
         const updated = [...prev];
         const idx = updated.length - 1;
         const chatMessage = updated[idx];
-        chatMessage.content += chunk;
-        chatMessage.pending = false;
+        if (chatMessage) {
+          chatMessage.content += chunk;
+          chatMessage.pending = false;
+        }
+        saveChatHistory(updated);
         return updated;
       });
     };
@@ -92,7 +96,7 @@ export default function ChatContainer({
         sentAt: Math.floor(Date.now() / 1000),
       },
     ];
-    setChatHistory(prevChatHistory);
+    setChatHistory(() => prevChatHistory);
     setLoadingResponse(true);
     setMessage('');
     // call /api/gpt_responce/sse with message
@@ -107,20 +111,37 @@ export default function ChatContainer({
   };
 
   useEffect(() => {
-    launchChatBot();
+    try {
+      const currentChatHistory = JSON.parse(
+        localStorage.getItem('chatHistory') || '[]'
+      );
+
+      setChatHistory(() => currentChatHistory);
+
+      if (!currentChatHistory.length) {
+        launchChatBot();
+      }
+    } catch (error) {
+      console.log('Unable to set chat history from local storage: ', error);
+    }
 
     socket.on('message', (data) => {
-      setChatHistory((chatHistory) => [
-        ...chatHistory,
-        {
-          content: data?.text,
-          role: 'assistant',
-          pending: false,
-          userMessage: message,
-          animate: false,
-          sentAt: Math.floor(Date.now() / 1000),
-        },
-      ]);
+      setChatHistory((chatHistory) => {
+        const newHistory = [
+          ...chatHistory,
+          {
+            content: data?.text,
+            role: 'assistant',
+            pending: false,
+            userMessage: message,
+            animate: false,
+            sentAt: Math.floor(Date.now() / 1000),
+          },
+        ];
+
+        saveChatHistory(newHistory);
+        return newHistory;
+      });
     });
   }, []);
 
@@ -133,7 +154,7 @@ export default function ChatContainer({
         })
         .then(() => {
           console.log('User joined the chat!');
-          setChatHistory((chatHistory) => [
+          const newHistory = [
             ...chatHistory,
             {
               content:
@@ -144,7 +165,9 @@ export default function ChatContainer({
               animate: false,
               sentAt: Math.floor(Date.now() / 1000),
             },
-          ]);
+          ];
+          setChatHistory(newHistory);
+          saveChatHistory(newHistory);
         })
         .finally(() => setIsJoiningChat(false));
 
@@ -198,11 +221,12 @@ export default function ChatContainer({
 
   const sendMessageToSupport = async (message) => {
     setIsSendingMessage(true);
-    const prevChatHistory = [
+    const newChatHistory = [
       ...chatHistory,
       { content: message, role: 'user', sentAt: Math.floor(Date.now() / 1000) },
     ];
-    setChatHistory(prevChatHistory);
+    setChatHistory(() => newChatHistory);
+    saveChatHistory(newChatHistory);
     await socket.emitWithAck('message', {
       type: 'user',
       text: message,
@@ -225,6 +249,10 @@ export default function ChatContainer({
 
     setLoadingResponse(false);
   };
+
+  const noMessagesFromUser = !Boolean(
+    chatHistory.some((m) => m.role === 'user')
+  );
 
   const isLoading =
     isJoiningChat ||

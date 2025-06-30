@@ -1,9 +1,6 @@
 import ChatWindowHeader from './Header';
-import SessionId from '../SessionId';
-import useChatHistory from '@/hooks/chat/useChatHistory';
 import ChatContainer from './ChatContainer';
 import Sponsor from '../Sponsor';
-import { ChatHistoryLoading } from './ChatContainer/ChatHistory';
 import ResetChat from '../ResetChat';
 import { useChatContext } from '@/context/ChatContext';
 
@@ -76,14 +73,9 @@ export default function ChatWindow({ closeChat, settings, sessionId }) {
               ? 'Changing agent.Please wait...'
               : `Switch to ${supportAgent === 'bot' ? 'human agent' : 'bot'}`}
           </button>
+          <ResetChat settings={settings} />
           <Sponsor settings={settings} />
         </div>
-        {/* <ResetChat
-          setChatHistory={setChatHistory}
-          settings={settings}
-          sessionId={sessionId}
-          closeChat={closeChat}
-        /> */}
       </div>
     </div>
   );

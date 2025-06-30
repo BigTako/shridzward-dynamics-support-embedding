@@ -7,7 +7,12 @@ const ChatContext = createContext();
 export function ChatProvider({ children }) {
   const [supportAgent, setSupportAgent] = useState('bot'); // 'bot' or 'human'
   const [isChangingAgent, setIsChangingAgent] = useState(false); // 'bot' or 'human'
+  const [chatHistory, setChatHistory] = useState([]);
 
+  const saveChatHistory = (newHistory) => {
+    const stringifiedHistory = JSON.stringify(newHistory);
+    localStorage.setItem('chatHistory', stringifiedHistory);
+  };
   return (
     <ChatContext.Provider
       value={{
@@ -15,6 +20,9 @@ export function ChatProvider({ children }) {
         setSupportAgent,
         isChangingAgent,
         setIsChangingAgent,
+        chatHistory,
+        setChatHistory,
+        saveChatHistory,
       }}
     >
       {children}
