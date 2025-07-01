@@ -177,7 +177,6 @@ export default function ChatContainer({ settings }) {
   }, [humanAgentChatId]);
 
   useEffect(() => {
-    console.log('switch agent', supportAgent);
     async function setupAgent() {
       if (supportAgent === 'human') {
         setIsChangingAgent(true);

@@ -5,9 +5,17 @@ import ResetChat from '../ResetChat';
 import { useChatContext } from '@/context/ChatContext';
 
 export default function ChatWindow({ closeChat, settings, sessionId }) {
-  const { supportAgent, setSupportAgent, isChangingAgent, saveSupportAgent } =
-    useChatContext();
+  const {
+    supportAgent,
+    setSupportAgent,
+    isChangingAgent,
+    saveSupportAgent,
+    chatHistory,
+  } = useChatContext();
 
+  const atLeastOneClientMessages = Boolean(
+    chatHistory?.some((message) => message.role === 'user')
+  );
   // const { chatHistory, setChatHistory, loading } = useChatHistory(
   //   settings,
   //   sessionId
@@ -73,7 +81,10 @@ export default function ChatWindow({ closeChat, settings, sessionId }) {
           <button
             className='allm-h-fit allm-px-0 allm-border-none allm-cursor-pointer allm-text-sm allm-bg-transparent hover:allm-opacity-80 hover:allm-underline'
             style={{ color: '#7A7D7E' }}
-            disabled={isChangingAgent}
+            disabled={
+              isChangingAgent ||
+              (!atLeastOneClientMessages && supportAgent === 'bot')
+            }
             onClick={handleToggleSupportAgent}
           >
             {isChangingAgent
